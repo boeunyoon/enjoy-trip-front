@@ -11,6 +11,8 @@ import PlaceSpecific from '@/components/place/PlaceSpecific.vue'
 import ReviewList from '@/components/review/ReviewList.vue';
 import ReviewWrite from '@/components/review/ReviewWrite.vue';
 import { useMemberStore } from '@/stores/member'
+import HotBoardList from '@/views/HotBoardList.vue'
+import RecentHotBoard from '@/views/RecentHotBoard.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,6 +63,14 @@ const router = createRouter({
     {
       path: '/place/:placeId/write',
       component: ReviewWrite,
+      name: 'ReviewWrite'
+    },{
+      path: '/board/hot',
+      component: HotBoardList,
+      name: 'ReviewWrite'
+    },{
+      path: '/board/recent/hot',
+      component: RecentHotBoard,
       name: 'ReviewWrite'
     },
   ]
