@@ -38,6 +38,7 @@ const goToArticle = () => {
           <div class="post-actions">
             <span class="likes"><v-icon color="red">mdi-heart</v-icon> {{ article.likeCount }}</span>
             <span class="comments"><v-icon color="blue">mdi-comment</v-icon> {{ article.commentCount }}</span>
+            <span class="comments"><v-icon color="blue">mdi-eye</v-icon> {{ article.readCount }}</span>
           </div>
         </v-col>
       </v-row>

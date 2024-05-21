@@ -17,12 +17,9 @@ defineExpose({ sidebarOpen, toggleSidebar });
 <template>
   <div>
     <v-list>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
-      <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
-      <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
-      <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
-      <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
+      <v-list-item prepend-icon="mdi-fire" title="인기 게시글" value="hot"></v-list-item>
+      <v-list-item prepend-icon="mdi-trending-up" title="급상승 게시글" value="about"></v-list-item>
+      <v-list-item prepend-icon="mdi-checkbox-marked-outline" title="TodoList" value="todolist"></v-list-item>
   </v-list>
   </div>
 </template>

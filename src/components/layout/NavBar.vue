@@ -15,8 +15,8 @@ const { userLogout } = memberStore;
 const logoutFunc = () => {
   userLogout();
   changeMenuState();
+  router.push("/");
 };
-
 const router = useRouter();
 const emit = defineEmits(["toggle-sidebar"]);
 
@@ -52,9 +52,24 @@ onMounted(() => {
 <template>
   <v-app-bar app class="transparent-navbar" flat>
     <v-app-bar-nav-icon @click="$emit('toggle-sidebar')"></v-app-bar-nav-icon>
+    <<<<<<< HEAD
     <v-toolbar-title style="color: #14b5e6; font-weight: 1000" class="home-title" @click="goHome">
       SsafyWA
     </v-toolbar-title>
+    =======
+    <v-toolbar-title
+      style="
+        color: #14b5e6;
+        font-weight: 1000;
+        font-size: 25px;
+        margin-top: 0.2%;
+        margin-left: 2.3%;
+      "
+      class="home-title"
+      @click="goHome"
+      >SsafyWA</v-toolbar-title
+    >
+    >>>>>>> origin/main
     <v-spacer></v-spacer>
     <v-btn icon @click="goSearchPlace" v-if="menuList[3].show">
       <v-icon>mdi-magnify</v-icon>

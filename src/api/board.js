@@ -43,6 +43,21 @@ function postComment(comment, success, fail) {
 function getCommentList(boardId, success, fail){
     local.get(`/comment/list/${boardId}`).then(success).catch(fail);
 }
+function getCategoryList(category, success, fail){
+    local.get(`/board/list/${category}`).then(success).catch(fail);
+}
+function getSortedList(category,sort, success, fail){
+    local.get(`/board/list/sort/${category}`, {params : {sorted : sort}}).then(success).catch(fail);
+}
+function updateReadCount(boardId, success, fail){
+    local.put(`/board/add/views/${boardId}`).then(success).catch(fail);
+}
+function getHotPost(success, fail){
+    local.get(`/board/list/hot`).then(success).catch(fail);
+}
+function getRecentHot(success, fail){
+    local.get(`/board/list/recent`).then(success).catch(fail);
+}
 export {
     listArticle,
     detailArticle,
@@ -53,5 +68,10 @@ export {
     likePost,
     unlikePost,
     postComment,
-    getCommentList
+    getCommentList,
+    getCategoryList,
+    getSortedList,
+    updateReadCount,
+    getHotPost,
+    getRecentHot
 }
