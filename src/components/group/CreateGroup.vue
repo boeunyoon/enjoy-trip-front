@@ -21,9 +21,12 @@ export default {
   },
   methods: {
     createGroup() {
-      // Handle group creation logic here
       console.log("Group created with:", this.category, this.title, this.content);
     },
   },
 };
 </script>
+
+<style scoped>
+/* Add any styles here */
+</style>

@@ -10,6 +10,8 @@ import PlaceSearch from '@/components/place/PlaceSearch.vue'
 import PlaceSpecific from '@/components/place/PlaceSpecific.vue'
 import ReviewList from '@/components/review/ReviewList.vue';
 import ReviewWrite from '@/components/review/ReviewWrite.vue';
+import GroupView from '@/views/GroupView.vue';
+import CreateGroup from '@/components/group/CreateGroup.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,6 +63,16 @@ const router = createRouter({
       path: '/place/:placeId/write',
       component: ReviewWrite,
       name: 'ReviewWrite'
+    },
+    {
+      path: '/group',
+      name: 'GroupView',
+      component: GroupView,
+    },
+    {
+      path: '/group/create', 
+      name: 'CreateGroup',
+      component: CreateGroup,
     },
   ]
 })
