@@ -36,9 +36,13 @@ import { useRouter } from 'vue-router';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/editor';
 import {marked} from 'marked';
+import { useMemberStore } from '@/stores/member';
+import { storeToRefs } from 'pinia';
 const items = ['자유 게시판', '우리 게시판', '거래 게시판', '질문 게시판', '정보 게시판'];
 const title = ref('');
 const selectedCategoryIndex = ref(null);
+const memberStore = useMemberStore();
+const {userinfo} = storeToRefs(memberStore);
 
 const router = useRouter();
 // const editorRef = ref(null);
@@ -104,7 +108,7 @@ const savePost = async () => {
     category: category.value,
     content: contentHTML,
     title: title.value,
-    writer: 'ssafy',
+    writer: userinfo.value.userId,
   };
   console.log(params)
 
