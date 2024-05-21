@@ -66,14 +66,19 @@ const router = createRouter({
       name: 'ReviewWrite'
     },
     {
-      path: '/group',
+      path: '/groups',
       name: 'GroupView',
       component: GroupView,
     },
     {
-      path: '/group/create', 
+      path: '/create-group',
       name: 'CreateGroup',
       component: CreateGroup,
+    },
+    {
+      path: '/group/:id',
+      name: 'GroupDetail',
+      component: () => import('@/components/group/GroupDetail.vue'), 
     },
   ]
 })

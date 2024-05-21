@@ -41,7 +41,7 @@ const goSearchPlace = () => {
 };
 
 const goGroup = () => {
-  router.push({ name: "group-view" }); // Add this function to navigate to the GroupView
+  router.push({ name: "GroupView" }); // Add this function to navigate to the GroupView
 };
 
 onMounted(() => {
@@ -52,11 +52,6 @@ onMounted(() => {
 <template>
   <v-app-bar app class="transparent-navbar" flat>
     <v-app-bar-nav-icon @click="$emit('toggle-sidebar')"></v-app-bar-nav-icon>
-    <<<<<<< HEAD
-    <v-toolbar-title style="color: #14b5e6; font-weight: 1000" class="home-title" @click="goHome">
-      SsafyWA
-    </v-toolbar-title>
-    =======
     <v-toolbar-title
       style="
         color: #14b5e6;
@@ -69,13 +64,11 @@ onMounted(() => {
       @click="goHome"
       >SsafyWA</v-toolbar-title
     >
-    >>>>>>> origin/main
     <v-spacer></v-spacer>
     <v-btn icon @click="goSearchPlace" v-if="menuList[3].show">
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
     <v-btn @click="goGroup" v-if="menuList[1].show"> 그룹 </v-btn>
-    <!-- Update this line -->
     <v-btn @click="gobaord" v-if="menuList[5].show"> 게시판 </v-btn>
     <v-btn @click="logoutFunc" v-if="menuList[4].show"> 로그아웃 </v-btn>
     <v-btn @click="goLogin" v-if="menuList[0].show"> 로그인 </v-btn>

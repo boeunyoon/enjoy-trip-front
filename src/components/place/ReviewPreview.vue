@@ -5,7 +5,9 @@
         <span class="review-total">리뷰 {{ totalReviews }}건</span>
       </v-col>
       <v-col cols="auto">
-        <v-btn :color="buttonColor" class="ml-2" @click="goToReviewWrite" style="color: aliceblue;">리뷰 작성</v-btn>
+        <v-btn :color="buttonColor" class="ml-2" @click="dialog = true" style="color: aliceblue">
+          리뷰 작성
+        </v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters>
@@ -29,10 +31,14 @@
               </v-card>
             </v-slide-item>
             <v-slide-item>
-              <v-btn :color="buttonColor" class="more-reviews" @click="goToAllReviews"
-              style="color: aliceblue;"
-                >리뷰 더 보기</v-btn
+              <v-btn
+                :color="buttonColor"
+                class="more-reviews"
+                @click="goToAllReviews"
+                style="color: aliceblue"
               >
+                리뷰 더 보기
+              </v-btn>
             </v-slide-item>
           </template>
           <template v-else>
@@ -49,48 +55,84 @@
         </v-slide-group>
       </v-col>
     </v-row>
+    <v-dialog v-model="dialog" max-width="800px">
+      <v-card>
+        <v-card-text>
+          <ReviewWrite
+            :place-id="place.placeId"
+            :user-info="userinfo"
+            @review-added="handleReviewAdded"
+            @dialog-close="dialog = false"
+          />
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
-<script>
-export default {
-  name: "ReviewPreview",
-  props: {
-    reviews: {
-      type: Array,
-      required: true,
-    },
-    totalReviews: {
-      type: Number,
-      required: true,
-    },
-    place: {
-      type: Object,
-      required: true,
-    },
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import ReviewWrite from "@/components/review/ReviewWrite.vue";
+import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from "pinia";
+import axios from "axios";
+
+// Get userinfo from the store
+const memberStore = useMemberStore();
+const { userinfo } = storeToRefs(memberStore);
+
+const props = defineProps({
+  reviews: {
+    type: Array,
+    required: true,
   },
-  data() {
-    return {
-      buttonColor: "#58d8ff",
-    };
+  totalReviews: {
+    type: Number,
+    required: true,
   },
-  methods: {
-    goToAllReviews() {
-      this.$router.push({
-        name: "ReviewList",
-        params: {
-          placeId: this.place.placeId,
-          placeName: this.place.placeName,
-        },
-      });
-    },
-    goToReviewWrite() {
-      this.$router.push({ name: "ReviewWrite", params: { placeId: this.place.placeId } });
-    },
-    truncatedContent(content) {
-      return content.length > 100 ? content.substring(0, 100) + "..." : content;
-    },
+  place: {
+    type: Object,
+    required: true,
   },
+});
+
+const dialog = ref(false);
+const buttonColor = ref("#58d8ff");
+const router = useRouter();
+
+const handleReviewAdded = (review) => {
+  props.reviews.push(review);
+  props.totalReviews += 1;
+  dialog.value = false;
+};
+
+const fetchReviews = async () => {
+  try {
+    const response = await axios.get(`http://localhost:8080/reviews/place/${props.place.placeId}`);
+    props.reviews.splice(0, props.reviews.length, ...response.data);
+    props.totalReviews = response.data.length;
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+  }
+};
+
+onMounted(() => {
+  fetchReviews();
+});
+
+const goToAllReviews = () => {
+  router.push({
+    name: "ReviewList",
+    params: {
+      placeId: props.place.placeId,
+      placeName: props.place.placeName,
+    },
+  });
+};
+
+const truncatedContent = (content) => {
+  return content.length > 100 ? content.substring(0, 100) + "..." : content;
 };
 </script>
 
