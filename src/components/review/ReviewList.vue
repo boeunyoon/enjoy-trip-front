@@ -46,14 +46,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
 import { storeToRefs } from "pinia";
 import { useMemberStore } from "@/stores/member";
 import ReviewCard from "@/components/review/ReviewCard.vue";
 
-// Define props
 const props = defineProps({
   place: Object,
 });
@@ -123,6 +122,11 @@ const toggleLike = (reviewId, currentLikes) => {
 };
 
 onMounted(() => {
+  fetchReviews();
+  fetchTotalReviews();
+});
+
+watch(route, () => {
   fetchReviews();
   fetchTotalReviews();
 });

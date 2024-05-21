@@ -10,6 +10,8 @@ import PlaceSearch from '@/components/place/PlaceSearch.vue'
 import PlaceSpecific from '@/components/place/PlaceSpecific.vue'
 import ReviewList from '@/components/review/ReviewList.vue';
 import ReviewWrite from '@/components/review/ReviewWrite.vue';
+import GroupView from '@/views/GroupView.vue';
+import CreateGroup from '@/components/group/CreateGroup.vue';
 import { useMemberStore } from '@/stores/member'
 import HotBoardList from '@/views/HotBoardList.vue'
 import RecentHotBoard from '@/views/RecentHotBoard.vue'
@@ -72,6 +74,21 @@ const router = createRouter({
       path: '/board/recent/hot',
       component: RecentHotBoard,
       name: 'ReviewWrite'
+    },
+    {
+      path: '/groups',
+      name: 'GroupView',
+      component: GroupView,
+    },
+    {
+      path: '/create-group',
+      name: 'CreateGroup',
+      component: CreateGroup,
+    },
+    {
+      path: '/group/:id',
+      name: 'GroupDetail',
+      component: () => import('@/components/group/GroupDetail.vue'), 
     },
   ]
 })
