@@ -10,6 +10,7 @@ import PlaceSearch from '@/components/place/PlaceSearch.vue'
 import PlaceSpecific from '@/components/place/PlaceSpecific.vue'
 import ReviewList from '@/components/review/ReviewList.vue';
 import ReviewWrite from '@/components/review/ReviewWrite.vue';
+import { useMemberStore } from '@/stores/member'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -33,7 +34,7 @@ const router = createRouter({
     },{
       path: '/member/login',
       name : 'login',
-      component : LoginPage
+      component : LoginPage,
     },{
       path : '/member/regist',
       name : 'regist',
@@ -64,5 +65,23 @@ const router = createRouter({
     },
   ]
 })
+// 네비게이션 가드 설정
+router.beforeEach((to, from, next) => {
+  const memberStore = useMemberStore();
+  const { isLogin } = memberStore;
+
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!isLogin) {
+      next({
+        path: '/login',
+        query: { redirect: to.fullPath }, // 로그인 후 돌아갈 페이지를 설정
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
 
 export default router

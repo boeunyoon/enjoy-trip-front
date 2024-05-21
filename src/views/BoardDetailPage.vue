@@ -1,8 +1,8 @@
 <script setup>
 import CommentComponent from '@/components/board/CommentComponent.vue';
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
-import { detailArticle, getCommentList, likePost, postComment, unlikePost, userLikedPost } from '@/api/board'; // 게시글 상세 API 함수
+import { detailArticle, getCommentList, likePost, postComment, unlikePost, updateReadCount, userLikedPost } from '@/api/board'; // 게시글 상세 API 함수
 import { storeToRefs } from 'pinia';
 import { useMemberStore } from '@/stores/member';
 const route = useRoute();
@@ -19,7 +19,7 @@ const fetchArticle = async () => {
     id,
     ({data}) => {
       article.value = data
-      // console.log(article.value);
+      console.log(article.value);
     },
     (error) => {
       console.error(error)
@@ -74,11 +74,37 @@ const toggleLike = async () => {
     console.error('Error toggling like:', error);
   }
 };
+// DOM 업데이트 후 img 태그에 스타일 적용
+// const applyImageStyles = async () => {
+//   await nextTick();
+//   const images = document.querySelectorAll('.post-content img');
+//   images.forEach((img) => {
+//     img.style.width = '100px';
+//     img.style.height = '100px';
+//     img.style.objectFit = 'cover';
+//   });
+// };
+// watch(article, async () => {
+//   await applyImageStyles();
+// })
+
 watch(() => article.value.likeCount, () => {
   // 게시글의 좋아요 수가 변경될 때 컴포넌트를 다시 렌더링합니다.
   checkIfLiked();
   console.log(isLiked)
 });
+const updateRead = () => {
+  const { id } = route.params;
+  updateReadCount(
+    id, 
+    ({data}) => {
+      console.log("조회수 증가 성공")
+    },
+    (error) => {
+      console.error(error)
+    }
+  )
+}
 const fetchComment = async () => {
   const { id } = route.params;
   console.log(id)
@@ -125,6 +151,7 @@ const submitComment = () => {
 
 onMounted(() => {
   fetchArticle();
+  updateRead();
   checkIfLiked();
   fetchComment();
 });
@@ -151,11 +178,6 @@ onMounted(() => {
         <v-row no-gutters>
           <v-col class="post-content" cols="12" md="12" v-html="article.content"></v-col>
         </v-row>
-        <v-row no-gutters>
-          <v-col class="post-image" cols="12" md="12">
-            <img src="../assets/testimg.png" alt="Post Image" class="post-image">
-          </v-col>
-        </v-row>
       </v-card>
       <v-row no-gutters>
           <v-col class="post-actions" cols="12" md="12">
@@ -163,6 +185,7 @@ onMounted(() => {
               <v-icon :color="isLiked ? 'red' : 'grey'">mdi-heart</v-icon> {{ article.likeCount }}
             </span>
             <span class="comments" style="background-color: #F3F5F6; padding: 10px; border-radius: 8px;"><v-icon color="blue">mdi-comment</v-icon> {{ article.commentCount }}</span>
+            <span class="comments" style="background-color: #F3F5F6; padding: 10px; border-radius: 8px;"><v-icon color="blue">mdi-eye</v-icon> {{ article.readCount }}</span>
           </v-col>
       </v-row>
       <v-row>
@@ -208,7 +231,7 @@ onMounted(() => {
   
   <style scoped>
   .post-card {
-    padding: 16px;
+    padding: 30px;
     margin-bottom: 16px;
     transition: box-shadow 0.3s, transform 0.3s;
     cursor: pointer;
@@ -251,6 +274,7 @@ onMounted(() => {
     font-size: 0.9rem;
     color: gray;
   }
+  img { max-width: 350px; }
   
   .post-actions .likes, .post-actions .comments {
     display: flex;
@@ -258,4 +282,15 @@ onMounted(() => {
     gap: 4px;
   }
   </style>
-  
+  <style >
+
+  .post-content img {
+      max-width: 1200px;
+      max-height: 400px;
+      display: block;
+  }
+  table, th, td{
+    border: 1px;
+  }
+
+</style>

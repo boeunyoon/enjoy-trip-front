@@ -39,9 +39,10 @@ import { useMemberStore } from '@/stores/member';
 import { useMenuStore } from '@/stores/menu';
 import { storeToRefs } from 'pinia';
 import { ref } from 'vue';
-import { RouterLink, useRouter } from 'vue-router';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 const memberStore = useMemberStore();
+const route = useRoute()
 // const menuStore = useMenuStore();
 const {isLogin, isLoginError} = storeToRefs(memberStore);
 const router = useRouter()
@@ -59,18 +60,20 @@ const {changeMenuState} = useMenuStore();
   //   }
   // }
   const loginFunc = async () => {
-    console.log(loginUser.value)
     await userLogin(loginUser.value)
     let token = sessionStorage.getItem("accessToken");
     console.log(token)
     console.log("isLogin : " + isLogin.value)
-    if(isLoginError === true){
+    if(isLoginError.value === true){
       alert('아이디 또는 비밀번호를 확인해주세요')
     }
     if(isLogin.value){
       getUserInfo(token)
       changeMenuState()
-      router.replace("/")
+      const redirect = route.query.redirect || '/';
+      router.push(redirect);
+    }else{
+      alert('아이디 또는 비밀번호를 확인해주세요')
     }
   }
   </script>
