@@ -67,6 +67,8 @@
 <script>
 import axios from "axios";
 import PlaceCard from "./PlaceCard.vue";
+import { storeToRefs } from "pinia";
+import { useMemberStore } from "@/stores/member";
 
 export default {
   components: {
@@ -158,8 +160,32 @@ export default {
       }
     },
     handleLike(place, isLiked) {
-      console.log(`Place: ${place.name}, Liked: ${isLiked}`);
+      if (!this.isLogin) {
+        alert("로그인 후 이용하세요");
+        return;
+      }
+
+      const action = isLiked ? "like" : "unlike";
+      axios
+        .post(`http://localhost:8080/place/${place.placeId}/${action}`, null, {
+          params: { userId: this.userinfo.userId },
+        })
+        .then(() => {
+          place.likeCount += isLiked ? 1 : -1;
+        })
+        .catch((error) => {
+          console.error(`Error ${isLiked ? "liking" : "unliking"} place:`, error);
+        });
     },
+  },
+  setup() {
+    const memberStore = useMemberStore();
+    const { userinfo, isLogin } = storeToRefs(memberStore);
+
+    return {
+      userinfo,
+      isLogin,
+    };
   },
 };
 </script>

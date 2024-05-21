@@ -19,39 +19,58 @@
   </v-col>
 </template>
 
-<script>
-export default {
-  name: "ReviewCard",
-  props: {
-    review: {
-      type: Object,
-      required: true,
-    },
+<script setup>
+import { ref, onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useMemberStore } from "@/stores/member";
+import axios from "axios";
+
+const props = defineProps({
+  review: {
+    type: Object,
+    required: true,
   },
-  data() {
-    return {
-      isLiked: false,
-    };
-  },
-  computed: {
-    formattedDate() {
-      console.log("Raw dateTime:", this.review.dateTime);
-      const options = { year: "numeric", month: "long", day: "numeric" };
-      const date = new Date(this.review.dateTime);
-      console.log("Parsed date:", date);
-      return date.toLocaleDateString(undefined, options);
-    },
-  },
-  methods: {
-    toggleLike(event) {
-      this.isLiked = !this.isLiked;
-      this.$emit("like", this.review.id);
-    },
-    goToReviewDetail() {
-      // Implement navigation to review detail if needed
-    },
-  },
+});
+
+const memberStore = useMemberStore();
+const { userinfo, isLogin } = storeToRefs(memberStore);
+
+const isLiked = ref(false);
+
+const checkIfLiked = async () => {
+  if (!isLogin.value) return;
+
+  try {
+    const response = await axios.get(`http://localhost:8080/reviews/${props.review.id}/liked`, {
+      params: { userId: userinfo.value.userId },
+    });
+    isLiked.value = response.data;
+  } catch (error) {
+    console.error("Error checking if user liked the review:", error);
+  }
 };
+
+const toggleLike = async () => {
+  if (!isLogin.value) {
+    alert("로그인 후 이용하세요");
+    return;
+  }
+
+  try {
+    const action = isLiked.value ? "unlike" : "like";
+    await axios.post(`http://localhost:8080/reviews/${props.review.id}/${action}`, null, {
+      params: { userId: userinfo.value.userId },
+    });
+    props.review.likes += isLiked.value ? -1 : 1;
+    isLiked.value = !isLiked.value;
+  } catch (error) {
+    console.error(`Error ${isLiked.value ? "unliking" : "liking"} review:`, error);
+  }
+};
+
+onMounted(() => {
+  checkIfLiked();
+});
 </script>
 
 <style scoped>

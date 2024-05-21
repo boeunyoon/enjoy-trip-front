@@ -18,6 +18,7 @@ export const useMemberStore = defineStore("memberStore", () => {
         await login(
             loginUser,
             (response) => {
+                console.log(response.status,"!!!")
                 if(response.status === httpStatusCode.CREATE){
                     console.log("로그인 성공!!");
                     let {data} = response

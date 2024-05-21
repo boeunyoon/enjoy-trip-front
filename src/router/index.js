@@ -8,6 +8,8 @@ import SignUpPage from '@/views/SignUpPage.vue'
 import MyPage from '@/views/MyPage.vue'
 import PlaceSearch from '@/components/place/PlaceSearch.vue'
 import PlaceSpecific from '@/components/place/PlaceSpecific.vue'
+import ReviewList from '@/components/review/ReviewList.vue';
+import ReviewWrite from '@/components/review/ReviewWrite.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,7 +50,18 @@ const router = createRouter({
       path : '/place/:id',
       name : 'place-specific',
       component : PlaceSpecific
-    }
+    },
+    {
+      path: '/reviews/:placeId',
+      name: 'ReviewList',
+      component: ReviewList,
+      props: route => ({ placeId: route.params.placeId, placeName: route.query.placeName })
+    },
+    {
+      path: '/place/:placeId/write',
+      component: ReviewWrite,
+      name: 'ReviewWrite'
+    },
   ]
 })
 

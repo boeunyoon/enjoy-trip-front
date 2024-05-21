@@ -49,14 +49,14 @@
 import { ref, computed, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
-import ReviewCard from "@/components/ReviewCard.vue";
+import { storeToRefs } from "pinia";
+import { useMemberStore } from "@/stores/member";
+import ReviewCard from "@/components/review/ReviewCard.vue";
 
 // Define props
 const props = defineProps({
   place: Object,
 });
-
-console.log("asdasdasd" + props.place);
 
 const route = useRoute();
 const placeId = ref(route.params.placeId);
@@ -70,6 +70,9 @@ const sortOptions = [
 const reviews = ref([]);
 const page = ref(1);
 const itemsPerPage = 12;
+
+const memberStore = useMemberStore();
+const { userinfo, isLogin } = storeToRefs(memberStore);
 
 const fetchReviews = () => {
   const sortOrder = selectedSort.value || "likes";
@@ -95,6 +98,11 @@ const fetchTotalReviews = () => {
 };
 
 const handleLike = (reviewId) => {
+  if (!isLogin.value) {
+    alert("로그인 후 이용하세요");
+    return;
+  }
+
   const review = reviews.value.find((r) => r.id === reviewId);
   if (review) {
     review.likes = toggleLike(reviewId, review.likes);
@@ -104,7 +112,7 @@ const handleLike = (reviewId) => {
 const toggleLike = (reviewId, currentLikes) => {
   const action = currentLikes > 0 ? "unlike" : "like";
   axios
-    .post(`http://localhost:8080/reviews/${reviewId}/${action}`, { userId: "currentUser" })
+    .post(`http://localhost:8080/reviews/${reviewId}/${action}`, { userId: userinfo.value.userId })
     .then(() => {
       currentLikes = action === "like" ? currentLikes + 1 : currentLikes - 1;
     })
