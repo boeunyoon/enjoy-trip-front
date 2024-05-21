@@ -13,8 +13,8 @@ import ReviewWrite from '@/components/review/ReviewWrite.vue';
 import GroupView from '@/views/GroupView.vue';
 import CreateGroup from '@/components/group/CreateGroup.vue';
 import { useMemberStore } from '@/stores/member'
-import HotBoardList from '@/views/HotBoardList.vue'
 import RecentHotBoard from '@/views/RecentHotBoard.vue'
+import HotBoardList from '@/views/HotBoardList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,7 +69,7 @@ const router = createRouter({
     },{
       path: '/board/hot',
       component: HotBoardList,
-      name: 'ReviewWrite'
+      name: 'hot'
     },{
       path: '/board/recent/hot',
       component: RecentHotBoard,

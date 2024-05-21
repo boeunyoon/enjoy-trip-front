@@ -15,6 +15,7 @@ const extractTextThumbnail = (content) => {
 const getArticleList = () => {
   getHotPost(
     ({ data }) => {
+      console.log(data)
       articles.value = data.map(article => {
         return{
           ...article,

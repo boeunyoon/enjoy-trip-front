@@ -54,7 +54,12 @@ const getCategory = () => {
   getCategoryList(
     category.value,
     ({data})=>{
-      articles.value = data
+      articles.value = data.map(article => {
+        return{
+          ...article,
+          thumbnail: extractTextThumbnail(article.content)
+        }
+      })
     },
     (error) => {
       console.log(error);
