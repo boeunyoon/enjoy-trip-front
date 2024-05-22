@@ -1,57 +1,99 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="600px">
-    <v-card>
-      <v-card-title>{{ group.name }}</v-card-title>
+  <v-container class="d-flex justify-center align-center vcon" v-if="group">
+    <v-card
+      class="group-module"
+      outlined
+      rounded="lg"
+      :style="{ borderColor: '#58d8ff', borderWidth: '2px' }"
+    >
+      <v-card-title>{{ group.groupName }}</v-card-title>
       <v-card-text>
-        <p>{{ group.description }}</p>
+        <div class="group-info">
+          <p><strong>종류: </strong> {{ group.type }}</p>
+          <p><strong>관리자: </strong> {{ group.groupOwner }}</p>
+          <p><strong>지역: </strong> {{ group.region }}</p>
+          <p><strong>모임 방식: </strong> {{ group.isOnline ? "온라인" : "오프라인" }}</p>
+          <br />
+        </div>
+        <div class="users-list">
+          <h3>그룹 멤버</h3>
+          <v-list>
+            <v-list-item v-for="(user, index) in groupMembers" :key="index">
+              <v-list-item-content>
+                <v-list-item-title>{{ user.userId }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </div>
       </v-card-text>
-      <v-card-actions v-if="group.isOwner">
-        <v-btn color="primary" @click="editGroup">Edit</v-btn>
-        <v-btn color="secondary" @click="addMember">Add Member</v-btn>
-      </v-card-actions>
-      <v-card-actions>
-        <v-btn color="error" @click="closeDialog">Close</v-btn>
-      </v-card-actions>
     </v-card>
-  </v-dialog>
+  </v-container>
+  <v-container v-else class="loading-container">
+    <p>Loading...</p>
+  </v-container>
 </template>
 
-<script setup>
-import { ref, watch, defineProps, defineEmits } from "vue";
+<script>
+import axios from "axios";
 
-const props = defineProps({
-  group: {
-    type: Object,
-    required: true,
+export default {
+  name: "MyGroupDetail",
+  props: {
+    groupId: {
+      type: [String, Number],
+      required: true,
+    },
+    group: {
+      type: Object,
+      required: true,
+    },
   },
-  show: {
-    type: Boolean,
-    required: true,
+  data() {
+    return {
+      groupMembers: [],
+      loading: false,
+    };
   },
-});
-
-const emit = defineEmits(["update:show"]);
-const dialog = ref(props.show);
-
-watch(
-  () => props.show,
-  (newVal) => {
-    dialog.value = newVal;
-  }
-);
-
-const editGroup = () => {
-  // Implement your edit group logic here
-  alert("Edit group functionality");
-};
-
-const addMember = () => {
-  // Implement your add member logic here
-  alert("Add member functionality");
-};
-
-const closeDialog = () => {
-  dialog.value = false;
-  emit("update:show", false);
+  created() {
+    console.log("Group data in MyGroupDetail:", this.group); // Debugging log
+    if (this.groupId) {
+      this.fetchGroupMembers();
+    } else {
+      console.error("groupId is not defined");
+    }
+  },
+  methods: {
+    async fetchGroupMembers() {
+      this.loading = true;
+      try {
+        const response = await axios.get(`http://localhost:8080/group/${this.groupId}/members`);
+        console.log("Fetched group members:", response.data); // Debugging log
+        this.groupMembers = response.data;
+      } catch (error) {
+        console.error("Error fetching group members:", error);
+      } finally {
+        this.loading = false;
+      }
+    },
+  },
 };
 </script>
+
+<style scoped>
+.group-module {
+  transition: transform 0.3s ease;
+  width: 500px;
+  height: 500px;
+}
+.group-module:hover {
+  transform: scale(1.05);
+}
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+</style>

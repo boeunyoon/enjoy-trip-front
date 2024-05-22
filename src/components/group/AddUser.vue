@@ -1,47 +1,107 @@
 <template>
   <v-container>
-    <h2>Add Users to {{ group.title }}</h2>
+    <h2>Add Users to {{ group.groupName }}</h2>
     <v-form>
-      <v-text-field v-model="newUser" label="Add User"></v-text-field>
-      <v-btn @click="addUser">Add User</v-btn>
+      <v-autocomplete
+        v-model="selectedUser"
+        :items="allUsers"
+        label="멤버 검색"
+        solo-filled
+        :loading="loading"
+        :disabled="loading"
+      ></v-autocomplete>
+      <v-btn @click="addUser" :disabled="loading || !selectedUser">추가</v-btn>
     </v-form>
     <v-list>
-      <v-list-item v-for="(user, index) in group.users" :key="index">
-        {{ user }}
+      <v-list-item v-for="(user, index) in groupMembers" :key="index">
+        {{ user.userId }}
       </v-list-item>
     </v-list>
   </v-container>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  props: ["groupId"],
+  props: {
+    groupId: {
+      type: [String, Number],
+      required: true,
+    },
+    group: {
+      type: Object,
+      required: true,
+      default: () => ({
+        id: null,
+        groupName: "",
+        users: [],
+      }),
+    },
+  },
   data() {
     return {
-      newUser: "",
-      group: null,
+      selectedUser: "",
+      allUsers: [],
+      groupMembers: [],
+      loading: false,
     };
   },
   created() {
-    this.fetchGroupDetails(this.groupId);
+    this.fetchAllUserIds();
+    this.fetchGroupMembers();
   },
   methods: {
-    fetchGroupDetails(groupId) {
-      // Fetch the group details using the groupId
-      // This is a placeholder, replace with actual API call
-      this.group = {
-        id: groupId,
-        title: "Example Group Title",
-        users: ["User1", "User2", "User3"],
-      };
+    async fetchAllUserIds() {
+      this.loading = true;
+      try {
+        const response = await axios.get(`http://localhost:8080/member/all-ids`);
+        console.log("Fetched user IDs:", response.data); // Debugging log
+        this.allUsers = response.data;
+      } catch (error) {
+        console.error("Error fetching user IDs:", error);
+      } finally {
+        this.loading = false;
+      }
     },
-    addUser() {
-      if (this.newUser) {
-        this.group.users.push(this.newUser);
-        this.newUser = "";
+    async fetchGroupMembers() {
+      try {
+        const response = await axios.get(`http://localhost:8080/group/${this.groupId}/members`);
+        console.log("Fetched group members:", response.data); // Debugging log
+        this.groupMembers = response.data;
+      } catch (error) {
+        console.error("Error fetching group members:", error);
+      }
+    },
+    async addUser() {
+      if (this.selectedUser) {
+        this.loading = true;
+        try {
+          console.log("Adding user:", this.selectedUser); // Debugging log
+          const response = await axios.post(
+            `http://localhost:8080/group/${this.groupId}/addMember`,
+            { userId: this.selectedUser },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          console.log("Add user response:", response); // Debugging log
+          this.fetchGroupMembers(); // Fetch group members after adding a user
+          this.selectedUser = "";
+          this.$emit("close"); // Emit close event to notify parent component
+        } catch (error) {
+          console.error("Error adding user to group:", error);
+        } finally {
+          this.loading = false;
+        }
       }
     },
   },
 };
 </script>
-<style></style>
+
+<style scoped>
+/* Add any specific styling here */
+</style>

@@ -12,6 +12,9 @@ import ReviewList from '@/components/review/ReviewList.vue';
 import ReviewWrite from '@/components/review/ReviewWrite.vue';
 import GroupView from '@/views/GroupView.vue';
 import CreateGroup from '@/components/group/CreateGroup.vue';
+import AddUser from '@/components/group/AddUser.vue';
+import EditGroup from '@/components/group/EditGroup.vue';
+import MyGroupDetail from '@/components/group/MyGroupDetail.vue';
 import { useMemberStore } from '@/stores/member'
 import RecentHotBoard from '@/views/RecentHotBoard.vue'
 import HotBoardList from '@/views/HotBoardList.vue'
@@ -90,7 +93,23 @@ const router = createRouter({
       path: '/group/:groupId',
       name: 'GroupDetail',
       component: () => import('@/components/group/GroupDetail.vue'), 
-    },{
+    },
+    {
+      path: '/group/edit/:groupId',
+      name: 'EditGroup',
+      component: EditGroup, 
+    },
+    {
+      path: '/group/add-user/:groupId',
+      name: 'AddUser',
+      component: AddUser, 
+    },
+    {
+      path: '/group/detail/:groupId',
+      name: 'MyGroupDetail',
+      component: MyGroupDetail,
+    },
+    {
       path: '/chat',
       name: 'chat',
       component: ChatTest, 

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="main-container">
+  <v-container class="main-container no-border">
     <v-row justify="center">
       <v-col cols="12" md="10">
         <v-card class="no-border">
@@ -38,10 +38,10 @@
             </v-row>
             <v-row justify="center">
               <v-col cols="auto">
-                <v-btn class="write" color="primary" @click="handleSubmit">작성</v-btn>
+                <v-btn class="write" color="#58d8ff" @click="handleSubmit">작성</v-btn>
               </v-col>
               <v-col cols="auto">
-                <v-btn class="cancel" color="secondary" @click="handleCancel">취소</v-btn>
+                <v-btn class="cancel" color="#F3F5F6" @click="handleCancel">취소</v-btn>
               </v-col>
             </v-row>
           </v-card-text>

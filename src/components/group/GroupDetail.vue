@@ -13,6 +13,7 @@
         {{ user }}
       </v-list-item>
     </v-list>
+    <v-btn @click="applyForGroup" color="primary">신청</v-btn>
   </v-container>
   <v-container v-else class="loading-container">
     <p>Loading...</p>
