@@ -26,7 +26,7 @@ const { unReadMsgCount } = storeToRefs(unReadMsgStore);
 const logoutFunc = () => {
   userLogout();
   changeMenuState();
-  router.push("/login");
+  router.push("/member/login");
 };
 const router = useRouter();
 
