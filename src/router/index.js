@@ -19,7 +19,8 @@ import { useMemberStore } from '@/stores/member'
 import RecentHotBoard from '@/views/RecentHotBoard.vue'
 import HotBoardList from '@/views/HotBoardList.vue'
 import ChatTest from '@/views/ChatTest.vue'
-
+import MessageList from '@/views/MessageList.vue'
+import MessageDetail from '@/views/MessageDetail.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -113,6 +114,14 @@ const router = createRouter({
       path: '/chat',
       name: 'chat',
       component: ChatTest, 
+    },{
+      path: '/msg/list',
+      name: 'msg-list',
+      component: MessageList, 
+    },{
+      path: '/msg/detail/:id',
+      name: 'msg-detail',
+      component: MessageDetail, 
     },
   ]
 })

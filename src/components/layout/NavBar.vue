@@ -2,11 +2,12 @@
 import { useMemberStore } from "@/stores/member";
 import { useMenuStore } from "@/stores/menu";
 import { storeToRefs } from "pinia";
-import { defineEmits, onMounted, onUpdated, ref } from "vue";
+import { onMounted, onUpdated, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import SockJS from 'sockjs-client';
 import Stomp from 'webstomp-client';
 import { getUnReadMsgCount } from "@/api/socket";
+import { useUnReadMsgStore } from "@/stores/message";
 
 const menuStore = useMenuStore();
 const memberStore = useMemberStore();
@@ -14,18 +15,20 @@ const { menuList } = storeToRefs(menuStore);
 const { userinfo, isLogin } = storeToRefs(memberStore);
 const { changeMenuState } = menuStore;
 const { userLogout } = memberStore;
-const recvList = ref([]);
-const unReadMsgCount = ref(0);
+// const unReadMsgCount = ref(0);
 const unReadMsgList = ref([]);
 const stompClient = ref(null);
 const connected = ref(false);
+const dialog = ref(false);
+const unReadMsgStore = useUnReadMsgStore();
+const { unReadMsgCount } = storeToRefs(unReadMsgStore);
+
 const logoutFunc = () => {
   userLogout();
   changeMenuState();
-  router.push("/");
+  router.push("/login");
 };
 const router = useRouter();
-const emit = defineEmits(["toggle-sidebar"]);
 
 const gobaord = () => {
   router.push({ name: "board-list" });
@@ -50,29 +53,44 @@ const goSearchPlace = () => {
 const goGroup = () => {
   router.push({ name: "GroupView" }); // Add this function to navigate to the GroupView
 };
+
 const fetchMsgCount = () => {
   getUnReadMsgCount(
     userinfo.value.userId,
     ({data}) => {
       console.log(data)
-      unReadMsgCount.value = data
+      unReadMsgStore.setUnReadMsgCount(data);
     },
     (error) => {
       console.log(error);
     }
   )
 }
-onUpdated(() => {
+
+watch(userinfo, (newVal, oldVal) => {
+  console.log('userInfo has changed');
+  console.log('Old Value:', oldVal);
+  console.log('New Value:', newVal);
+  connect();
   if(userinfo.value != null){
     fetchMsgCount();
   }
+}, {deep : true})
+
+onUpdated(() => {
+  console.log("UPDATE")
 })
+
 onMounted(() => {
   connect();
   if(userinfo.value != null){
     fetchMsgCount();
   }
 });
+const goMessageList = () => {
+  router.push("/msg/list")
+}
+
 const connect = () => {
   const serverURL = "http://localhost:8080/ws";
   const socket = new SockJS(serverURL);
@@ -87,7 +105,7 @@ const connect = () => {
         const data = JSON.parse(res.body)
         if(isLogin.value && data.msgInfo.receiverId === userinfo.value.userId){
           unReadMsgList.value = data.unReadMsg;
-          unReadMsgCount.value = data.unReadMsgCount;
+          unReadMsgStore.setUnReadMsgCount(data.unReadMsgCount);
         }
       });
     },
@@ -123,23 +141,46 @@ const connect = () => {
     <v-btn @click="logoutFunc" v-if="menuList[4].show"> 로그아웃 </v-btn>
     <v-btn @click="goLogin" v-if="menuList[0].show"> 로그인 </v-btn>
     <p v-if="isLogin">{{ userinfo.nickName }}님 안녕하세요</p>
-    <p v-if="isLogin">{{ unReadMsgCount }}</p>
+    <v-btn v-if="isLogin" @click="goMessageList">
+      <v-badge
+          color="red"
+          :content="unReadMsgCount"
+          overlap
+        >
+          <v-icon size="23px">mdi-bell</v-icon>
+      </v-badge>
+    </v-btn>
     <v-btn icon @click="goProfile" v-if="menuList[2].show">
       <v-icon icon="mdi-account-circle"></v-icon>
     </v-btn>
   </v-app-bar>
+  
+  <!-- Dialog for Unread Messages -->
+  <v-dialog v-model="dialog" max-width="600px">
+    <v-card>
+      <v-card-title class="text-h5 grey lighten-2">
+        Unread Messages
+      </v-card-title>
+      <v-card-text>
+        <v-list>
+          <v-list-item
+            v-for="(msg, index) in unReadMsgList"
+            :key="index"
+          >
+            <v-list-item-content>
+              <v-list-item-title>{{ msg.senderId }}</v-list-item-title>
+              <v-list-item-subtitle>{{ msg.content }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="blue darken-1" text @click="dialog = false">닫기</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
-
-<style scoped>
-.transparent-navbar {
-  background-color: transparent !important;
-  box-shadow: none !important;
-  z-index: 10; /* 다른 요소들보다 위에 위치하도록 z-index 설정 */
-}
-.home-title {
-  cursor: pointer;
-}
-</style>
 
 <style scoped>
 .transparent-navbar {

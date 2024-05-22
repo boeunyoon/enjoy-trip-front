@@ -155,7 +155,6 @@ onMounted(() => {
           </v-col>
         </v-row>
       </v-container>
-      <v-btn @click="gochat">GO CHAT</v-btn>
     </div>
   </div>
 </template>
