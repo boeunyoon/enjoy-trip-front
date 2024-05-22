@@ -70,8 +70,13 @@ const clickLikeSort = () => {
   getSortedList(
     category.value,
     "like",
-    ({data}) => {
-      articles.value = data
+    ({data})=>{
+      articles.value = data.map(article => {
+        return{
+          ...article,
+          thumbnail: extractTextThumbnail(article.content)
+        }
+      })
     },
     (error) => {
       console.log("clickLikeSort error", error);
@@ -82,8 +87,13 @@ const clickReadCountSort = () => {
   getSortedList(
     category.value,
     "read",
-    ({data}) => {
-      articles.value = data
+    ({data})=>{
+      articles.value = data.map(article => {
+        return{
+          ...article,
+          thumbnail: extractTextThumbnail(article.content)
+        }
+      })
     },
     (error) => {
       console.log("clickLikeSort error", error);
@@ -94,8 +104,13 @@ const clickCommentCountSort = () => {
   getSortedList(
     category.value,
     "comment",
-    ({data}) => {
-      articles.value = data
+    ({data})=>{
+      articles.value = data.map(article => {
+        return{
+          ...article,
+          thumbnail: extractTextThumbnail(article.content)
+        }
+      })
     },
     (error) => {
       console.log("clickLikeSort error", error);

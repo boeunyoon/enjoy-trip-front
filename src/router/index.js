@@ -15,6 +15,7 @@ import CreateGroup from '@/components/group/CreateGroup.vue';
 import { useMemberStore } from '@/stores/member'
 import RecentHotBoard from '@/views/RecentHotBoard.vue'
 import HotBoardList from '@/views/HotBoardList.vue'
+import ChatTest from '@/views/ChatTest.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -73,7 +74,7 @@ const router = createRouter({
     },{
       path: '/board/recent/hot',
       component: RecentHotBoard,
-      name: 'ReviewWrite'
+      name: 'recent-hot'
     },
     {
       path: '/groups',
@@ -89,6 +90,10 @@ const router = createRouter({
       path: '/group/:id',
       name: 'GroupDetail',
       component: () => import('@/components/group/GroupDetail.vue'), 
+    },{
+      path: '/chat',
+      name: 'chat',
+      component: ChatTest, 
     },
   ]
 })
