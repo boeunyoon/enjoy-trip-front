@@ -18,4 +18,7 @@ async function tokenRegeneration(user, success, fail) {
 async function getMemberList(param, success, fail) {
     await local.get(`/member/list`, {params : {currentUserId : param}}).then(success).catch(fail);
 }
-export {login, logout, findById, tokenRegeneration, getMemberList};
+async function signUp(param, success, fail) {
+    await local.post(`/member/regist`, param).then(success).catch(fail);
+}
+export {login, logout, findById, tokenRegeneration, getMemberList,signUp};

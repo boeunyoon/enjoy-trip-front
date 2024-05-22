@@ -1,5 +1,7 @@
 <script setup>
+import { signUp } from "@/api/user";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const username = ref("");
 const nickname = ref("");
@@ -8,6 +10,7 @@ const confirmPassword = ref("");
 const email = ref("");
 const cities = ref(["서울", "대전", "부울경", "광주", "구미"]);
 const campus = ref("");
+const router = useRouter();
 
 const passwordRules = [
   (v) => !!v || "회원가입을 위한 필수 입력 사항입니다.",
@@ -28,7 +31,25 @@ function handleSubmit() {
     alert("비밀번호가 일치하지 않습니다.");
     return;
   }
-  alert(`Registration successful for username: ${username.value}`);
+  const param = {
+    userId: username.value,
+    userName: username.value,
+    nickName: nickname.value,
+    userPassword: password.value,
+    userEmail: email.value,
+    campus: campus.value,
+  };
+  console.log(param)
+  signUp(
+    param,
+    ({data}) => {
+      alert(`Registration successful for username: ${username.value} ${data}`);
+      router.push("/member/login")
+    },
+    (error) => {
+      alert(`회원가입 실패: ${username.value} ${error}`);
+    }
+  )
 }
 </script>
 

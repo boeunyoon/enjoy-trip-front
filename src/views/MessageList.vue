@@ -11,7 +11,6 @@ const sentMsgList = ref([]);
 const memberStore = useMemberStore();
 const { userinfo } = storeToRefs(memberStore);
 const unReadMsgStore = useUnReadMsgStore();
-const { unReadMsgCount, decrementUnReadMsgCount } = storeToRefs(unReadMsgStore); // add the unread message count and decrement function
 
 // Pagination states
 const receivedPage = ref(1);
@@ -87,13 +86,14 @@ const goToDetail = (msg) => {
   makeUnreadToRead(
         msg.id,
         ({data}) => {
-            console.log("읽기 성공, 읽기 처리 완료")
+            console.log("읽기 성공, 읽기 처리 완료", data)
             unReadMsgStore.decrementUnReadMsgCount();
         },
         (error) => {
             console.error(error)
         }
     )
+    fetchMessages();
   selectedMessage.value = msg;
   dialog.value = true;
 }
@@ -115,8 +115,8 @@ const goToDetail = (msg) => {
             <v-col v-for="(msg, i) in paginatedReceivedMsgList" :key="i" cols="12">
               <v-card class="mb-2" style="background-color: #F3F5F6;" 
                 @click="goToDetail(msg)">
-                <v-card-title>{{ msg.senderId }}</v-card-title>
-                <v-card-text>{{ msg.content }}</v-card-text>
+                <v-card-title>{{ msg.content }}</v-card-title>
+                <v-card-text class="details"><span class="author">{{ msg.senderId }}</span> | <span class="date">{{ msg.timestamp }}</span></v-card-text>
               </v-card>
             </v-col>
           </v-row>
@@ -135,8 +135,8 @@ const goToDetail = (msg) => {
           <v-row>
             <v-col v-for="(msg, i) in paginatedUnReadMsgList" :key="i" cols="12">
               <v-card class="mb-2" @click="goToDetail(msg)" style="background-color: #F3F5F6;">
-                <v-card-title>{{ msg.senderId }}</v-card-title>
-                <v-card-text>{{ msg.content }}</v-card-text>
+                <v-card-title>{{ msg.content }}</v-card-title>
+                <v-card-text class="details"><span class="author">{{ msg.senderId }}</span> | <span class="date">{{ msg.timestamp }}</span></v-card-text>
               </v-card>
             </v-col>
           </v-row>
@@ -155,8 +155,8 @@ const goToDetail = (msg) => {
           <v-row>
             <v-col v-for="(msg, i) in paginatedSentMsgList" :key="i" cols="12">
               <v-card class="mb-2" @click="goToDetail(msg)" style="background-color: #F3F5F6;">
-                <v-card-title>{{ msg.receiverId }}</v-card-title>
-                <v-card-text>{{ msg.content }}</v-card-text>
+                <v-card-title>{{ msg.content }}</v-card-title>
+                <v-card-text class="details"><span class="author">{{ msg.senderId }}</span> | <span class="date">{{ msg.timestamp }}</span></v-card-text>
               </v-card>
             </v-col>
           </v-row>
@@ -171,9 +171,13 @@ const goToDetail = (msg) => {
       </v-tabs-window-item>
     </v-tabs-window>
   </v-card>
-  <v-dialog v-model="dialog" persistent max-width="600px">
+  <v-dialog v-model="dialog" persistent max-width="600px" style="border-radius: 5px;">
     <v-card>
-      <v-card-title>{{ selectedMessage?.senderId }}</v-card-title>
+      <v-card-title> 
+        작성자: {{ selectedMessage?.senderId }}
+        <p class="date">보낸 날짜: {{ selectedMessage.timestamp }}</p>
+        <hr/>
+      </v-card-title>
       <v-card-text>
         <p>{{ selectedMessage?.content }}</p>
       </v-card-text>
@@ -200,5 +204,7 @@ const goToDetail = (msg) => {
 .v-tabs-items {
   flex-grow: 1;
 }
-
+.details{
+  color: #14B5E6
+}
 </style>
