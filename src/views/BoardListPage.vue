@@ -82,23 +82,6 @@ const clickLikeSort = () => {
       })
     },
     (error) => {
-      console.log(error);
-    }
-  )
-}
-const clickLikeSort = () => {
-  getSortedList(
-    category.value,
-    "like",
-    ({data})=>{
-      articles.value = data.map(article => {
-        return{
-          ...article,
-          thumbnail: extractTextThumbnail(article.content)
-        }
-      })
-    },
-    (error) => {
       console.log("clickLikeSort error", error);
     }
   );
