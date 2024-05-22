@@ -9,6 +9,7 @@ const props = defineProps({
     required: true,
   },
 });
+
 const goToGroup = () => {
   router.push(`/group/${props.group.id}`);
 };
@@ -23,16 +24,31 @@ const goToGroup = () => {
     @click="goToGroup"
   >
     <v-row align="center" no-gutters>
-      <v-col class="group-name" cols="12" md="3">
-        <strong>{{ group.group_name }}</strong>
+      <v-col
+        class="group-name"
+        cols="12"
+        md="6"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center"
+      >
+        <strong>{{ group.groupName }}</strong>
+        <div class="writer-details">
+          <span class="author">{{ group.groupOwner }}</span> |
+          <span class="numOfGroup">{{ group.recruitMaxNumber }}</span>
+        </div>
       </v-col>
       <v-col cols="1" class="divider-col">
         <div class="divider"></div>
       </v-col>
-      <v-col class="group-info" cols="12" md="8">
-        <div class="group-details">
-          <span class="user-id">{{ group.user_id }}</span> |
-          <span class="category">{{ group.category }}</span>
+      <v-col
+        class="group-info"
+        cols="12"
+        md="5"
+        style="display: flex; flex-direction: column; align-items: center; justify-content: center"
+      >
+        <div class="post-content">
+          <span class="group-type">{{ group.type }}</span> |
+          <span class="region">{{ group.region }}</span> |
+          <span class="isOnline">{{ group.isOnline }}</span>
         </div>
       </v-col>
     </v-row>
@@ -52,15 +68,23 @@ const goToGroup = () => {
 
 .group-name {
   font-size: 1.2rem;
+  text-align: center;
 }
 
 .group-info {
   padding-left: 16px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align content to the left */
 }
 
-.group-details {
-  font-size: 0.9rem;
-  color: #14b5e6;
+.writer-details {
+  font-size: 0.8rem;
+}
+
+.author {
+  color: #58d8ff;
 }
 
 .divider-col {
