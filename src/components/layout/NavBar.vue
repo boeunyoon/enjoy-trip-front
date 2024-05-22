@@ -2,8 +2,11 @@
 import { useMemberStore } from "@/stores/member";
 import { useMenuStore } from "@/stores/menu";
 import { storeToRefs } from "pinia";
-import { defineEmits, onMounted } from "vue";
+import { defineEmits, onMounted, onUpdated, ref } from "vue";
 import { useRouter } from "vue-router";
+import SockJS from 'sockjs-client';
+import Stomp from 'webstomp-client';
+import { getUnReadMsgCount } from "@/api/socket";
 
 const menuStore = useMenuStore();
 const memberStore = useMemberStore();
@@ -11,7 +14,11 @@ const { menuList } = storeToRefs(menuStore);
 const { userinfo, isLogin } = storeToRefs(memberStore);
 const { changeMenuState } = menuStore;
 const { userLogout } = memberStore;
-
+const recvList = ref([]);
+const unReadMsgCount = ref(0);
+const unReadMsgList = ref([]);
+const stompClient = ref(null);
+const connected = ref(false);
 const logoutFunc = () => {
   userLogout();
   changeMenuState();
@@ -43,10 +50,53 @@ const goSearchPlace = () => {
 const goGroup = () => {
   router.push({ name: "GroupView" }); // Add this function to navigate to the GroupView
 };
-
+const fetchMsgCount = () => {
+  getUnReadMsgCount(
+    userinfo.value.userId,
+    ({data}) => {
+      console.log(data)
+      unReadMsgCount.value = data
+    },
+    (error) => {
+      console.log(error);
+    }
+  )
+}
+onUpdated(() => {
+  if(userinfo.value != null){
+    fetchMsgCount();
+  }
+})
 onMounted(() => {
-  console.log(userinfo.value);
+  connect();
+  if(userinfo.value != null){
+    fetchMsgCount();
+  }
 });
+const connect = () => {
+  const serverURL = "http://localhost:8080/ws";
+  const socket = new SockJS(serverURL);
+  stompClient.value = Stomp.over(socket);
+  stompClient.value.connect(
+    {},
+    frame => {
+      connected.value = true;
+      console.log('소켓 연결 성공', frame);
+      stompClient.value.subscribe("/topic/notify", res => {
+        console.log('Received message:', res.body);
+        const data = JSON.parse(res.body)
+        if(isLogin.value && data.msgInfo.receiverId === userinfo.value.userId){
+          unReadMsgList.value = data.unReadMsg;
+          unReadMsgCount.value = data.unReadMsgCount;
+        }
+      });
+    },
+    error => {
+      connected.value = false;
+      console.error('소켓 연결 실패', error);
+    }
+  );
+}
 </script>
 
 <template>
@@ -73,6 +123,7 @@ onMounted(() => {
     <v-btn @click="logoutFunc" v-if="menuList[4].show"> 로그아웃 </v-btn>
     <v-btn @click="goLogin" v-if="menuList[0].show"> 로그인 </v-btn>
     <p v-if="isLogin">{{ userinfo.nickName }}님 안녕하세요</p>
+    <p v-if="isLogin">{{ unReadMsgCount }}</p>
     <v-btn icon @click="goProfile" v-if="menuList[2].show">
       <v-icon icon="mdi-account-circle"></v-icon>
     </v-btn>

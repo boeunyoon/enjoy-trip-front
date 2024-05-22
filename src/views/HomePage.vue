@@ -35,6 +35,9 @@ const fetchHotList = () => {
 const goHotDetail = (id) => {
   router.push(`/board/${id}`)
 }
+const gochat = () => {
+  router.push(`/chat`)
+}
 onMounted(() => {
   fetchHotList();
 })
@@ -152,6 +155,7 @@ onMounted(() => {
           </v-col>
         </v-row>
       </v-container>
+      <v-btn @click="gochat">GO CHAT</v-btn>
     </div>
   </div>
 </template>
