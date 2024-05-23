@@ -43,8 +43,8 @@ function postComment(comment, success, fail) {
 function getCommentList(boardId, success, fail){
     local.get(`/comment/list/${boardId}`).then(success).catch(fail);
 }
-function getCategoryList(category, success, fail){
-    local.get(`/board/list/${category}`).then(success).catch(fail);
+function getCategoryList(category, campus, success, fail){
+    local.get(`/board/list/${category}`,{params : {campus : campus}}).then(success).catch(fail);
 }
 function getSortedList(category,sort, success, fail){
     local.get(`/board/list/sort/${category}`, {params : {sorted : sort}}).then(success).catch(fail);

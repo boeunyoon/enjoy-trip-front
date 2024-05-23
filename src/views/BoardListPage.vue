@@ -6,9 +6,13 @@ const page = ref(1);
 
 import { getCategoryList, getSortedList, listArticle } from "@/api/board";
 import { useRouter } from "vue-router";
+import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from "pinia";
 const router = useRouter();
 const articles = ref([]);
 const category = ref();
+const memberStore = useMemberStore();
+const {userinfo} = storeToRefs(memberStore);
 const extractTextThumbnail = (content) => {
   // DOMParser를 사용하여 HTML 파싱
   const parser = new DOMParser();
@@ -56,6 +60,7 @@ const goWrite = () => {
 const getCategory = () => {
   getCategoryList(
     category.value,
+    userinfo.value.campus,
     ({ data }) => {
       articles.value = data.map((article) => {
         return {

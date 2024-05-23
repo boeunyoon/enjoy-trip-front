@@ -1,6 +1,7 @@
 <script setup>
 import { getHotPost } from '@/api/board';
 import { getAllGroups } from '@/api/group';
+import GroupDetail from '@/components/group/GroupDetail.vue';
 import {onMounted, ref} from "vue";
 import { useRouter } from 'vue-router';
 // import { useMemberStore } from '@/stores/member';
@@ -8,6 +9,12 @@ import { useRouter } from 'vue-router';
 // import { onMounted } from 'vue';
 // const memberStore = useMemberStore();
 const router = useRouter();
+const selectedGroup = ref(null);
+const isModalOpen = ref(false);
+const openGroupModal = (group) => {
+  selectedGroup.value = group;
+  isModalOpen.value = true;
+};
 const extractTextThumbnail = (content) => {
   // DOMParser를 사용하여 HTML 파싱
   const parser = new DOMParser();
@@ -137,7 +144,7 @@ onMounted(() => {
               min-height="280px"
               prepend-icon="mdi-account-group"
               :title=item.groupName
-              @click="goHotGroupDetail(item.id)"
+              @click="openGroupModal(item)"
             >
               <template v-slot:prepend>
                 <v-icon size="x-large" color="blue"></v-icon>
@@ -177,6 +184,10 @@ onMounted(() => {
           </v-col>
         </v-row>
       </v-container>
+      <v-dialog v-model="isModalOpen" persistent max-width="600px">
+        <template v-slot:activator="{ on, attrs }"></template>
+        <GroupDetail :group="selectedGroup" @close="isModalOpen = false" />
+      </v-dialog>
     </div>
   </div>
 </template>
