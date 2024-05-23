@@ -98,11 +98,14 @@ const send = () => {
   <div class="sticky-wrapper">
     <v-btn
       fab
-      color="primary"
+      color="light-blue-accent-3"
       dark
+      width="70px"
+      height="70px"
+      style="border-radius: 50px;"
       @click="toggleChatWindow"
     >
-      <v-icon>mdi-message-text</v-icon>
+      <v-icon size="28px">mdi-message-text</v-icon>
     </v-btn>
 
     <v-dialog v-model="chatWindow" persistent max-width="600">
@@ -123,7 +126,7 @@ const send = () => {
               :key="idx"
               class="message"
             >
-              <p>유저이름: {{ userinfo.userId }}</p>
+              <p>유저이름: {{ item.senderId }}</p>
               <p>내용: {{ item.content }}</p>
             </div>
           </div>
@@ -148,8 +151,8 @@ const send = () => {
 <style scoped>
 .sticky-wrapper {
   position: fixed;
-  bottom: 16px;
-  right: 16px;
+  bottom: 50px;
+  right: 50px;
   z-index: 9999;
 }
 .chat-content {
