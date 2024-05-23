@@ -7,8 +7,10 @@ import MyInfo from "@/components/profile/MyInfo.vue";
 import NewButtonComponent from "@/components/profile/NewButtonComponent.vue";
 import { useMemberStore } from "@/stores/member";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import axios from "axios";
+
 const memberStore = useMemberStore();
 const { userinfo, isLogin } = storeToRefs(memberStore);
 const router = useRouter();
@@ -35,6 +37,7 @@ const menuItems = ref([
     component: NewButtonComponent,
   },
 ]);
+
 onBeforeMount(() => {
   if (!isLogin.value) {
     alert("로그인이 필요합니다");
@@ -44,24 +47,78 @@ onBeforeMount(() => {
     });
   }
 });
+
 const selectedMenu = ref(null);
 const toggleMenu = (menuItem) => {
   if (selectedMenu.value === menuItem) {
     selectedMenu.value = null; // 이미 선택된 메뉴를 다시 클릭하면 선택 해제
-  }else if(menuItem.text === "나의 쪽지 보기"){
-    router.push("/msg/list")
+  } else if (menuItem.text === "나의 쪽지 보기") {
+    router.push("/msg/list");
   } else {
     selectedMenu.value = menuItem; // 다른 메뉴를 클릭하면 해당 메뉴를 선택
   }
 };
+
+const changeProfilePicture = async () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.onchange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("userId", userinfo.value.userId);
+
+        const response = await axios.post(
+          "http://localhost:8080/member/uploadProfileImage",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          const key = response.data; // Store the key, not the full URL
+          userinfo.value.imageUrl = key;
+          alert("프로필 사진이 변경되었습니다.");
+        } else {
+          alert("프로필 사진 변경에 실패했습니다.");
+        }
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        alert("프로필 사진 업로드 중 오류가 발생했습니다.");
+      }
+    }
+  };
+  input.click();
+};
+
+const profileImageUrl = computed(() => {
+  if (userinfo.value && userinfo.value.imageUrl) {
+    return `https://ssafywabucket.s3.ap-northeast-2.amazonaws.com/${userinfo.value.imageUrl}`;
+  }
+  return "/profile_icon_ssafy.jpg";
+});
 </script>
+
 <template>
   <v-container class="profile-page">
     <v-row justify="center" class="mt-5">
       <v-col cols="12" md="8" class="text-center">
-        <v-avatar size="120" class="mx-auto">
-          <v-img src="/img/dog.jpg" alt="Profile Picture"></v-img>
+        <v-avatar size="120" class="mx-auto profile-avatar">
+          <v-img
+            class="profile-pic"
+            :src="profileImageUrl"
+            alt="Profile Picture"
+            style="margin: 50px"
+          ></v-img>
         </v-avatar>
+        <div></div>
+        <v-btn small class="mt-2" @click="changeProfilePicture">업로드</v-btn>
         <h3 class="mt-3">{{ userinfo?.userId || "Guest" }}</h3>
         <p>{{ userinfo?.userEmail || "Guest" }}</p>
       </v-col>
@@ -110,8 +167,15 @@ const toggleMenu = (menuItem) => {
   font-family: Inter-Regular;
 }
 
+.profile-avatar {
+  margin-bottom: 8px;
+}
+
 .profile-pic {
   border-radius: 50%;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
 .menu-button {

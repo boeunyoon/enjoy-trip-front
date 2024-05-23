@@ -1,40 +1,40 @@
 <script setup>
-import { getLikedPlace } from '@/api/place';
-import { onMounted, ref } from 'vue';
-import { useMemberStore } from '@/stores/member';
-import { storeToRefs } from 'pinia';
-import { useRouter } from 'vue-router';
-import PlaceCard from '../place/PlaceCard.vue';
+import { getLikedPlace } from "@/api/place";
+import { onMounted, ref } from "vue";
+import { useMemberStore } from "@/stores/member";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
+import PlaceCard from "../place/PlaceCard.vue";
 const router = useRouter();
 const memberStore = useMemberStore();
-const page = ref(1)
+const page = ref(1);
 const { userinfo } = storeToRefs(memberStore);
 const palces = ref(null);
 const getPlace = () => {
-    const userId = userinfo.value.userId;
-    getLikedPlace(
-        userId,
-        ({data}) => {
-            console.log(data)
-            palces.value = data;
-        },
-        (error) => {
-            console.log(error)
-        }
-    )
-}
+  const userId = userinfo.value.userId;
+  getLikedPlace(
+    userId,
+    ({ data }) => {
+      console.log(data);
+      palces.value = data;
+    },
+    (error) => {
+      console.log(error);
+    }
+  );
+};
 const goToPlaceDetail = (id) => {
-    router.push(`/place/${id}`)
-}
+  router.push(`/place/${id}`);
+};
 onMounted(() => {
-    getPlace();
-}) 
+  getPlace();
+});
 </script>
 
 <template>
+  <div>
     <div>
-        <div>
-        <!-- <v-row justify="center">
+      <!-- <v-row justify="center">
           <v-col cols="8">
             <v-container class="max-width">
               <v-pagination
@@ -46,9 +46,7 @@ onMounted(() => {
           </v-col>
         </v-row> -->
     </div>
-    </div>
+  </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

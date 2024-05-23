@@ -1,6 +1,7 @@
 <template>
-  <div id="app" style="margin-top: 10%;">
+  <div id="app" style="margin-top: 10%">
     <h2>쪽지 보내기</h2>
+    <br />
     <v-container>
       <v-row class="">
         <v-col cols="12">
@@ -29,7 +30,6 @@
                 auto-grow
                 rows="5"
                 outlined
-
               ></v-textarea>
             </v-col>
           </v-row>
@@ -38,41 +38,32 @@
 
       <v-row class="mb-4">
         <v-col cols="12" class="text-right">
-          <v-btn color="primary" @click="sendMessage">전송</v-btn>
+          <v-btn
+            @click="sendMessage"
+            style="width: 70px; background-color: #58d8ff; color: aliceblue; margin-right: 20px"
+            >전송</v-btn
+          >
+          <v-btn
+            @click="closeModal"
+            class="centered-button"
+            style="width: 70px; background-color: #f3f5f6; color: darkgray"
+            >닫기</v-btn
+          >
         </v-col>
       </v-row>
-
-      <!-- <v-row>
-        <v-col cols="12">
-          <v-list>
-            <v-list-item-group>
-              <v-list-item
-                v-for="(item, idx) in recvList"
-                :key="idx"
-                class="message-item"
-              >
-                <v-list-item-content>
-                  <v-list-item-title>보낸 사람: {{ item.senderId }}</v-list-item-title>
-                  <v-list-item-subtitle>받는 사람: {{ item.receiverId }}</v-list-item-subtitle>
-                  <v-list-item-subtitle>내용: {{ item.content }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-col>
-      </v-row> -->
     </v-container>
   </div>
 </template>
 
 <script setup>
-import SockJS from 'sockjs-client';
-import Stomp from 'webstomp-client';
-import { useMemberStore } from '@/stores/member';
-import { onMounted, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { getMemberList } from '@/api/user';
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+import { useMemberStore } from "@/stores/member";
+import { onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
+import { getMemberList } from "@/api/user";
 
+const emit = defineEmits(["close"]);
 const senderId = ref("");
 const receiverId = ref("");
 const message = ref("");
@@ -91,20 +82,20 @@ const getAllMember = () => {
   getMemberList(
     userId,
     ({ data }) => {
-      console.log(data)
+      console.log(data);
       memberList.value = data;
     },
     (error) => {
       console.log(error);
     }
-  )
-}
+  );
+};
 
 onMounted(() => {
   getAllMember();
   connect();
   senderId.value = userinfo.value.userId;
-})
+});
 
 const connect = () => {
   const serverURL = "http://localhost:8080/ws";
@@ -112,39 +103,43 @@ const connect = () => {
   stompClient.value = Stomp.over(socket);
   stompClient.value.connect(
     {},
-    frame => {
+    (frame) => {
       connected.value = true;
-      console.log('소켓 연결 성공', frame);
-      stompClient.value.subscribe("/topic/notify", res => {
-        console.log('Received message:', res.body);
+      console.log("소켓 연결 성공", frame);
+      stompClient.value.subscribe("/topic/notify", (res) => {
+        console.log("Received message:", res.body);
         recvList.value.push(JSON.parse(res.body));
       });
     },
-    error => {
+    (error) => {
       connected.value = false;
-      console.error('소켓 연결 실패', error);
+      console.error("소켓 연결 실패", error);
     }
   );
-}
+};
 
 const sendMessage = () => {
-  if (senderId.value !== '' && message.value !== '' && receiverId.value !== '') {
+  if (senderId.value !== "" && message.value !== "" && receiverId.value !== "") {
     send();
-    message.value = '';
-    receiverId.value = '';
+    message.value = "";
+    receiverId.value = "";
   }
-}
+};
 
 const send = () => {
   if (stompClient.value && stompClient.value.connected) {
     const msg = {
       senderId: senderId.value,
       receiverId: receiverId.value,
-      content: message.value
+      content: message.value,
     };
     stompClient.value.send("/app/notify", JSON.stringify(msg), {});
   }
-}
+};
+
+const closeModal = () => {
+  emit("close");
+};
 </script>
 
 <style scoped>
