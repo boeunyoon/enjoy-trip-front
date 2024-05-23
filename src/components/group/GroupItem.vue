@@ -1,8 +1,7 @@
 <script setup>
-import { defineProps } from "vue";
+import { defineProps, defineEmits } from "vue";
 import { useRouter } from "vue-router";
 
-const router = useRouter();
 const props = defineProps({
   group: {
     type: Object,
@@ -10,8 +9,10 @@ const props = defineProps({
   },
 });
 
+const emits = defineEmits(["click"]);
+
 const goToGroup = () => {
-  router.push(`/group/${props.group.id}`);
+  emits("click");
 };
 </script>
 
@@ -20,6 +21,7 @@ const goToGroup = () => {
     class="group-card"
     outlined
     color="#F3F5F6"
+    height="110px"
     style="border-radius: 10px; margin: 0px 10% 0px 10%"
     @click="goToGroup"
   >
@@ -28,10 +30,17 @@ const goToGroup = () => {
         class="group-name"
         cols="12"
         md="6"
-        style="display: flex; flex-direction: column; align-items: center; justify-content: center"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          margin-top: 10px;
+        "
       >
         <strong>{{ group.groupName }}</strong>
-        <div class="writer-details">
+        <div class="writer-details" style="margin-top: 10px">
           <span class="author">{{ group.groupOwner }}</span> |
           <span class="numOfGroup">{{ group.recruitMaxNumber }}</span>
         </div>
@@ -43,9 +52,16 @@ const goToGroup = () => {
         class="group-info"
         cols="12"
         md="5"
-        style="display: flex; flex-direction: column; align-items: center; justify-content: center"
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          margin-top: 10px;
+        "
       >
-        <div class="post-content">
+        <div class="post-content" style="margin-top: 10px">
           <span class="group-type">{{ group.type }}</span> |
           <span class="region">{{ group.region }}</span> |
           <span class="isOnline">{{ group.isOnline }}</span>
@@ -69,18 +85,22 @@ const goToGroup = () => {
 .group-name {
   font-size: 1.2rem;
   text-align: center;
+  margin-top: 10px;
 }
 
 .group-info {
   padding-left: 16px;
-  text-align: left;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align content to the left */
+  align-items: center; /* Center align items */
+  margin-top: 10px; /* Add margin-top */
+  margin-bottom: 5px;
 }
 
 .writer-details {
   font-size: 0.8rem;
+  margin-top: 10px; /* Add margin-top */
 }
 
 .author {
