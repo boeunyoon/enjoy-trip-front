@@ -31,7 +31,7 @@ const menuItems = ref([
   {
     icon: "mdi-heart-outline",
     activeIcon: "mdi-heart",
-    text: "새로운 버튼",
+    text: "나의 쪽지 보기",
     component: NewButtonComponent,
   },
 ]);
@@ -48,6 +48,8 @@ const selectedMenu = ref(null);
 const toggleMenu = (menuItem) => {
   if (selectedMenu.value === menuItem) {
     selectedMenu.value = null; // 이미 선택된 메뉴를 다시 클릭하면 선택 해제
+  }else if(menuItem.text === "나의 쪽지 보기"){
+    router.push("/msg/list")
   } else {
     selectedMenu.value = menuItem; // 다른 메뉴를 클릭하면 해당 메뉴를 선택
   }

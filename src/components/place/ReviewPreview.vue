@@ -9,6 +9,16 @@
           리뷰 작성
         </v-btn>
       </v-col>
+      <v-col cols="auto">
+        <v-btn
+          :color="buttonColor"
+          class="more-reviews"
+          @click="goToAllReviews"
+          style="color: aliceblue"
+        >
+          리뷰 더 보기
+        </v-btn>
+      </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col cols="12">
@@ -29,16 +39,6 @@
                   </v-col>
                 </v-row>
               </v-card>
-            </v-slide-item>
-            <v-slide-item>
-              <v-btn
-                :color="buttonColor"
-                class="more-reviews"
-                @click="goToAllReviews"
-                style="color: aliceblue"
-              >
-                리뷰 더 보기
-              </v-btn>
             </v-slide-item>
           </template>
           <template v-else>
@@ -77,7 +77,14 @@ import ReviewWrite from "@/components/review/ReviewWrite.vue";
 import { useMemberStore } from "@/stores/member";
 import { storeToRefs } from "pinia";
 import axios from "axios";
-
+const extractTextThumbnail = (content) => {
+  // DOMParser를 사용하여 HTML 파싱
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(content, 'text/html');
+  const textContent = doc.body.textContent || "";
+  // 첫 100자 추출
+  return textContent.length > 30 ? textContent.substring(0, 100) + '...' : textContent;
+};
 // Get userinfo from the store
 const memberStore = useMemberStore();
 const { userinfo } = storeToRefs(memberStore);
@@ -132,7 +139,7 @@ const goToAllReviews = () => {
 };
 
 const truncatedContent = (content) => {
-  return content.length > 100 ? content.substring(0, 100) + "..." : content;
+  return content.length > 10 ? content.substring(0, 20) + "..." : content;
 };
 </script>
 
@@ -190,11 +197,11 @@ const truncatedContent = (content) => {
   align-items: center;
   justify-content: center;
   height: 100%;
-  width: 200px;
+  /* width: 200px; */
   text-align: center;
   background-color: #128fb5;
   color: white;
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 .more-reviews:hover {
   background-color: #128fb5;

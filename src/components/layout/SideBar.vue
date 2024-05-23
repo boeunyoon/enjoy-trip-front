@@ -36,7 +36,7 @@ defineExpose({ sidebarOpen, toggleSidebar });
     <v-list>
       <v-list-item prepend-icon="mdi-fire" title="인기 게시글" value="hot" @click="goHotList"></v-list-item>
       <v-list-item prepend-icon="mdi-trending-up" title="급상승 게시글" value="about" @click="goRecentHotList"></v-list-item>
-      <v-list-item prepend-icon="mdi-checkbox-marked-outline" title="쪽지쓰기" value="todolist" @click="openDialog"></v-list-item>
+      <v-list-item prepend-icon="mdi-message-text" title="쪽지쓰기" value="todolist" @click="openDialog"></v-list-item>
       <v-list-item prepend-icon="mdi-checkbox-marked-outline" title="TodoList" value="todolist"></v-list-item>
     </v-list>
     <v-dialog v-model="dialog" max-width="600px">

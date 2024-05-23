@@ -58,7 +58,7 @@ const fetchMsgCount = () => {
   getUnReadMsgCount(
     userinfo.value.userId,
     ({data}) => {
-      console.log(data)
+      // console.log(data)
       unReadMsgStore.setUnReadMsgCount(data);
     },
     (error) => {
@@ -68,9 +68,9 @@ const fetchMsgCount = () => {
 }
 
 watch(userinfo, (newVal, oldVal) => {
-  console.log('userInfo has changed');
-  console.log('Old Value:', oldVal);
-  console.log('New Value:', newVal);
+  // console.log('userInfo has changed');
+  // console.log('Old Value:', oldVal);
+  // console.log('New Value:', newVal);
   connect();
   if(userinfo.value != null){
     fetchMsgCount();
@@ -99,9 +99,9 @@ const connect = () => {
     {},
     frame => {
       connected.value = true;
-      console.log('소켓 연결 성공', frame);
+      // console.log('소켓 연결 성공', frame);
       stompClient.value.subscribe("/topic/notify", res => {
-        console.log('Received message:', res.body);
+        // console.log('Received message:', res.body);
         const data = JSON.parse(res.body)
         if(isLogin.value && data.msgInfo.receiverId === userinfo.value.userId){
           unReadMsgList.value = data.unReadMsg;

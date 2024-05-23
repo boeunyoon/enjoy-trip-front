@@ -171,16 +171,17 @@ const goToDetail = (msg) => {
       </v-tabs-window-item>
     </v-tabs-window>
   </v-card>
-  <v-dialog v-model="dialog" persistent max-width="600px" style="border-radius: 5px;">
+  <v-dialog v-model="dialog" persistent max-width="600px" 
+    style="border-radius: 5px; padding: 30px;">
     <v-card>
-      <v-card-title> 
-        작성자: {{ selectedMessage?.senderId }}
-        <p class="date">보낸 날짜: {{ selectedMessage.timestamp }}</p>
-        <hr/>
-      </v-card-title>
-      <v-card-text>
-        <p>{{ selectedMessage?.content }}</p>
+      <v-card-text style="background-color: #F3F5F6;"> 
+        작성자: {{ selectedMessage?.senderId }} | 
+        <span class="date">보낸 날짜: {{ selectedMessage.timestamp }}</span>
       </v-card-text>
+      <hr/>
+      <v-card-title style="margin-top: 10px; margin-left: 5px;">
+        <p>{{ selectedMessage?.content }}</p>
+      </v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="blue darken-1" text @click="dialog = false">닫기</v-btn>

@@ -9,13 +9,25 @@ const memberStore = useMemberStore()
 const {userinfo} = storeToRefs(memberStore);
 const articles = ref([]);
 const page = ref(1);
+const extractTextThumbnail = (content) => {
+  // DOMParser를 사용하여 HTML 파싱
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(content, "text/html");
+  const textContent = doc.body.textContent || "";
+  // 첫 100자 추출
+  return textContent.length > 30 ? textContent.substring(0, 100) + "..." : textContent;
+};
 const fetchArticle = () => {
     const userId = userinfo.value.userId;
     getLikedPost(
         userId,
         ({data}) => {
-            articles.value = data;
-            console.log(data)
+          articles.value = data.map((article) => {
+            return {
+              ...article,
+              thumbnail: extractTextThumbnail(article.content),
+            };
+          });
         },
         (error) => {
             console.log(error);

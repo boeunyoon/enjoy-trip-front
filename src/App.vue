@@ -4,6 +4,7 @@ import NavBar from './components/layout/NavBar.vue';
 import SideBar from './components/layout/SideBar.vue';
 import { RouterView } from 'vue-router';
 import "@/assets/fonts.css";
+import ChatSpeedDial from './components/chat/ChatSpeedDial.vue';
 
 const sidebarOpen = ref(false);
 
@@ -23,6 +24,7 @@ function toggleSidebar() {
     <v-main class="main-content">
       <RouterView />
     </v-main>
+    <ChatSpeedDial />
   </v-app>
 </template>
 

@@ -12,9 +12,9 @@
       <v-col cols="6" class="right-col d-flex align-center justify-center">
         <div>
           <p class="placeInfo">
-            <strong>Category: </strong> {{ place.categoryGroupName }}<br />
-            <strong>Phone: </strong> {{ place.phone }}<br />
-            <strong>Website: </strong>
+            <strong>카테고리: </strong> {{ place.categoryGroupName }}<br />
+            <strong>전화번호: </strong> {{ place.phone }}<br />
+            <strong>웹 사이트: </strong>
             <a :href="place.placeUrl" class="website-link">{{ place.placeUrl }}</a>
           </p>
         </div>

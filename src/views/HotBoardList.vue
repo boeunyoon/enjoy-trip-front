@@ -36,7 +36,7 @@ onMounted(() => {
 
 <template>
     <div style="margin-top: 7%; ">
-        <h2 style="margin-bottom: 3%; margin-left: 10%;"><v-icon size="x-large" color="red">mdi-fire</v-icon><span style="color: red;">HOT</span> 게시글</h2>
+        <h2 style="margin-bottom: 1%; margin-left: 10%;"><v-icon size="x-large" color="red">mdi-fire</v-icon><span style="color: red;">HOT</span> 게시글</h2>
         <v-data-iterator :items="articles">
           <template v-slot:default="{ items }">
             <template
