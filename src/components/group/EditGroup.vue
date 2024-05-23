@@ -1,48 +1,68 @@
 <template>
-  <v-container v-if="group" class="center-content">
-    <v-form class="full-screen-form" @submit.prevent="editGroup">
-      <v-row>
-        <v-col cols="6">
-          <v-select v-model="region" :items="regions" label="지역" required></v-select>
-        </v-col>
-        <v-col cols="6">
-          <v-select v-model="category" :items="categories" label="그룹 종류" required></v-select>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="6">
-          <v-select v-model="mode" :items="modes" label="모임 방식" required></v-select>
-        </v-col>
-        <v-col cols="6">
-          <v-select
-            v-model="numberOfMembers"
-            :items="memberNumbers"
-            label="모집 인원"
+  <v-container v-if="group" class="d-flex justify-center align-center vcon">
+    <v-card
+      class="group-module"
+      outlined
+      rounded="lg"
+      :style="{
+        borderColor: '#58d8ff',
+        borderWidth: '2px',
+        borderRadius: '10px',
+        width: '800px',
+        height: 'auto',
+      }"
+    >
+      <div class="inner-content">
+        <v-form @submit.prevent="editGroup">
+          <v-row>
+            <v-col cols="6">
+              <v-select v-model="region" :items="regions" label="지역" required></v-select>
+            </v-col>
+            <v-col cols="6">
+              <v-select
+                v-model="category"
+                :items="categories"
+                label="그룹 종류"
+                required
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="6">
+              <v-select v-model="mode" :items="modes" label="모임 방식" required></v-select>
+            </v-col>
+            <v-col cols="6">
+              <v-select
+                v-model="numberOfMembers"
+                :items="memberNumbers"
+                label="모집 인원"
+                required
+              ></v-select>
+            </v-col>
+          </v-row>
+          <v-text-field v-model="title" label="그룹명" required></v-text-field>
+          <v-textarea
+            v-model="content"
+            label="모집하는 그룹에 대한 설명을 입력해주세요!"
             required
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-text-field v-model="title" label="그룹명" required></v-text-field>
-      <v-textarea
-        v-model="content"
-        label="모집하는 그룹에 대한 설명을 입력해주세요!"
-        required
-      ></v-textarea>
-      <div class="button-row">
-        <v-btn
-          type="submit"
-          class="centered-button"
-          style="width: 90px; background-color: #58d8ff; color: aliceblue"
-          >수정 완료</v-btn
-        >
-        <v-btn
-          @click="closeModal"
-          class="centered-button"
-          style="width: 90px; background-color: #ff5858; color: aliceblue; margin-left: 10px"
-          >닫기</v-btn
-        >
+          ></v-textarea>
+          <div class="button-row">
+            <v-btn
+              type="submit"
+              class="centered-button"
+              style="width: 90px; background-color: #58d8ff; color: aliceblue"
+              >수정 완료</v-btn
+            >
+            <v-btn
+              @click="closeModal"
+              class="centered-button"
+              style="width: 90px; background-color: #f3f5f6; color: darkgray; margin-left: 10px"
+              >닫기</v-btn
+            >
+          </div>
+        </v-form>
       </div>
-    </v-form>
+    </v-card>
   </v-container>
   <v-container v-else class="loading-container">
     <p>Loading...</p>
@@ -129,28 +149,44 @@ const closeModal = () => {
 </script>
 
 <style scoped>
-.center-content {
+.group-module {
+  transition: transform 0.3s ease;
+  width: 800px;
+  max-height: 90vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  flex-direction: column;
+  overflow: hidden;
+  padding: 20px;
 }
-.full-screen-form {
-  width: 80%;
-  max-width: 600px;
+
+.inner-content {
+  padding: 20px; /* Add padding inside the card for spacing */
+  overflow-y: auto;
+  max-height: calc(90vh - 40px); /* Adjust max-height to account for padding */
+  width: 100%;
 }
-.centered-button {
-  display: inline-block;
-  margin: 20px auto;
-  background-color: #58d8ff;
-  color: white;
+
+.group-module:hover {
+  transform: scale(1.05);
 }
+
+.group-module::-webkit-scrollbar {
+  display: none;
+}
+
+.group-module {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 .button-row {
   display: flex;
   justify-content: center;
   margin-top: 20px;
 }
+
 .loading-container {
   display: flex;
   justify-content: center;

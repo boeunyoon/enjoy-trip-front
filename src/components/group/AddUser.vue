@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <h2>Add Users to {{ group.groupName }}</h2>
+  <v-container class="bordered-container">
+    <h2 class="group-name">{{ group.groupName }}</h2>
     <v-form>
       <v-autocomplete
         v-model="selectedUser"
@@ -10,13 +10,23 @@
         :loading="loading"
         :disabled="loading"
       ></v-autocomplete>
-      <v-btn @click="addUser" :disabled="loading || !selectedUser">추가</v-btn>
+      <div class="button-container">
+        <v-btn @click="addUser" :disabled="loading || !selectedUser" class="custom-button">
+          추가
+        </v-btn>
+      </div>
     </v-form>
-    <v-list>
-      <v-list-item v-for="(user, index) in groupMembers" :key="index">
+    <v-list class="members-list">
+      <v-list-item v-for="(user, index) in groupMembers" :key="index" class="bordered-item">
         {{ user.userId }}
       </v-list-item>
     </v-list>
+    <div class="close-button-container">
+      <v-btn @click="closeModal" class="close-button">닫기</v-btn>
+    </div>
+    <v-alert v-if="alert" type="success" dismissible v-model="alert">
+      멤버 추가 완료하였습니다!
+    </v-alert>
   </v-container>
 </template>
 
@@ -45,6 +55,7 @@ export default {
       allUsers: [],
       groupMembers: [],
       loading: false,
+      alert: false,
     };
   },
   created() {
@@ -88,9 +99,11 @@ export default {
             }
           );
           console.log("Add user response:", response); // Debugging log
-          this.fetchGroupMembers(); // Fetch group members after adding a user
+          // Add the user to the local list immediately
+          this.groupMembers.push({ userId: this.selectedUser });
           this.selectedUser = "";
-          this.$emit("close"); // Emit close event to notify parent component
+          this.alert = true; // Show success alert
+          setTimeout(() => (this.alert = false), 3000); // Hide alert after 3 seconds
         } catch (error) {
           console.error("Error adding user to group:", error);
         } finally {
@@ -100,8 +113,64 @@ export default {
     },
   },
 };
+
+const closeModal = () => {
+  emit("close");
+};
 </script>
 
 <style scoped>
-/* Add any specific styling here */
+.group-name {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px; /* Larger font size */
+}
+
+.v-form {
+  margin-bottom: 20px; /* Add spacing between form and list */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 20px; /* Add spacing below button */
+}
+
+.custom-button {
+  background-color: #58d8ff;
+  color: aliceblue;
+}
+
+.bordered-container {
+  border: 2px solid #58d8ff;
+  border-radius: 10px;
+  padding: 40px 20px; /* Add padding to create more space at the top and bottom */
+  max-width: 800px; /* Increased width */
+  margin: 0 auto; /* Center the container */
+}
+
+.members-list {
+  padding-top: 20px; /* Add spacing above the list */
+}
+
+.bordered-item {
+  border-bottom: 1px solid #58d8ff;
+  padding: 10px 0; /* Add padding to list items */
+}
+
+.bordered-item:last-child {
+  border-bottom: none;
+}
+
+.close-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Add spacing above the close button */
+}
+
+.close-button {
+  background-color: #f3f5f6;
+  color: darkgray;
+}
 </style>

@@ -1,10 +1,9 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row style="border-radius: 5px">
       <v-col cols="12">
-        <h3>나의 그룹</h3>
         <v-list>
-          <v-list-item v-for="group in groups" :key="group.id">
+          <v-list-item v-for="group in groups" :key="group.id" class="groupItem">
             <v-list-item-content>
               <v-row>
                 <v-col cols="8">
@@ -12,10 +11,34 @@
                   <v-list-item-subtitle v-if="group.isOwner">관리자</v-list-item-subtitle>
                   <v-list-item-subtitle v-if="!group.isOwner">멤버</v-list-item-subtitle>
                 </v-col>
-                <v-col cols="4" class="text-right">
-                  <v-btn v-if="group.isOwner" @click="editGroup(group)" small>수정</v-btn>
-                  <v-btn v-if="group.isOwner" @click="addUser(group)" small>멤버 추가</v-btn>
-                  <v-btn v-if="!group.isOwner" @click="viewGroup(group)" small>보기</v-btn>
+                <v-col cols="4" class="text-right d-flex align-center justify-center">
+                  <v-btn
+                    v-if="group.isOwner"
+                    @click="editGroup(group)"
+                    small
+                    class="mx-2"
+                    style="background-color: #58d8ff; color: aliceblue"
+                  >
+                    수정
+                  </v-btn>
+                  <v-btn
+                    v-if="group.isOwner"
+                    @click="addUser(group)"
+                    small
+                    class="mx-2"
+                    style="background-color: #58d8ff; color: aliceblue"
+                  >
+                    멤버 추가
+                  </v-btn>
+                  <v-btn
+                    v-if="!group.isOwner"
+                    @click="viewGroup(group)"
+                    small
+                    class="mx-2"
+                    style="background-color: #58d8ff; color: aliceblue"
+                  >
+                    보기
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-list-item-content>
@@ -25,7 +48,7 @@
     </v-row>
 
     <v-dialog v-model="showEditGroup" max-height="650px" max-width="500px">
-      <v-card>
+      <v-card style="border-radius: 20px">
         <v-card-text>
           <EditGroup :group="selectedGroup" @close="showEditGroup = false" />
         </v-card-text>
@@ -33,15 +56,15 @@
     </v-dialog>
 
     <v-dialog v-model="showAddUser" max-width="500px">
-      <v-card>
+      <v-card style="border-radius: 20px">
         <v-card-text>
           <AddUser :group="selectedGroup" :groupId="selectedGroup.id" @close="closeAddUser" />
         </v-card-text>
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="showGroupDetail" max-width="500px" max-height="700px">
-      <v-card>
+    <v-dialog v-model="showGroupDetail" max-width="500px" max-height="1500px">
+      <v-card style="border-radius: 20px">
         <v-card-text>
           <MyGroupDetail
             :group="selectedGroup"
@@ -132,6 +155,7 @@ h3 {
 
 .v-list-item {
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .v-list-item:hover {
@@ -140,5 +164,13 @@ h3 {
 
 .text-right {
   text-align: right;
+}
+
+.groupItem {
+  margin-bottom: 30px;
+  height: 100px;
+  border: 1px solid #58d8ff; /* Add border */
+  padding: 10px; /* Add padding for better spacing */
+  border-radius: 10px !important; /* Add border radius with !important */
 }
 </style>

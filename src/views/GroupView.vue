@@ -1,5 +1,5 @@
 <template>
-  <v-container style="margin-top: 6%">
+  <v-container style="margin-top: 2%">
     <v-row class="selectChoice">
       <v-col cols="12" md="3">
         <v-select
@@ -48,7 +48,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" v-for="(group, index) in paginatedGroups" :key="index">
-        <GroupItem :group="group" @update-like="handleLike" />
+        <GroupItem :group="group" @click="openGroupModal(group)" />
       </v-col>
     </v-row>
     <v-row justify="center">
@@ -58,6 +58,11 @@
         </v-container>
       </v-col>
     </v-row>
+
+    <v-dialog v-model="isModalOpen" persistent max-width="600px">
+      <template v-slot:activator="{ on, attrs }"></template>
+      <GroupDetail :group="selectedGroup" @close="isModalOpen = false" />
+    </v-dialog>
   </v-container>
 </template>
 
@@ -65,6 +70,7 @@
 import { ref, computed, onMounted } from "vue";
 import axios from "axios";
 import GroupItem from "@/components/group/GroupItem.vue";
+import GroupDetail from "@/components/group/GroupDetail.vue"; // Import GroupDetail component
 import { useMemberStore } from "@/stores/member";
 
 const selectedRegion = ref(null);
@@ -149,6 +155,14 @@ const fetchGroups = async () => {
 
 const handleLike = () => {
   // Implement the logic for handling likes
+};
+
+const selectedGroup = ref(null);
+const isModalOpen = ref(false);
+
+const openGroupModal = (group) => {
+  selectedGroup.value = group;
+  isModalOpen.value = true;
 };
 
 onMounted(() => {
